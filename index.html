@@ -4,11 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Order Honey</title>
-  <!--
-    TO CHANGE WHERE THE QR CODE GOES: replace the link after "url=" on the next line.
-    That is the only line you ever need to edit.
-  -->
-  <meta http-equiv="refresh" content="0; url=PASTE_FORM_LINK_HERE">
+  <!-- TO CHANGE WHERE THE QR CODE GOES: replace the link after "url=" on the next line. -->
+  <meta http-equiv="refresh" content="0; url=https://forms.gle/uKUTU26cSy4C5k639">
   <style>
     body { font-family: system-ui, sans-serif; background: #fdf6e3; color: #3b2f1e;
            display: flex; min-height: 100vh; margin: 0; align-items: center; justify-content: center; text-align: center; padding: 16px; }
@@ -17,11 +14,7 @@
 </head>
 <body>
   <p>Taking you to the honey order form…<br><br>
-     <a id="go" href="#">Tap here if nothing happens</a></p>
-  <script>
-    var url = document.querySelector('meta[http-equiv="refresh"]').content.split('url=')[1];
-    document.getElementById('go').href = url;
-    location.replace(url);
-  </script>
+     <a href="https://forms.gle/uKUTU26cSy4C5k639">Tap here if nothing happens</a></p>
+  <script>location.replace("https://forms.gle/uKUTU26cSy4C5k639");</script>
 </body>
 </html>
