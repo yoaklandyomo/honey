@@ -1,20 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Order Honey</title>
-  <!-- TO CHANGE WHERE THE QR CODE GOES: replace the link after "url=" on the next line. -->
-  <meta http-equiv="refresh" content="0; url=https://forms.gle/uKUTU26cSy4C5k639">
-  <style>
-    body { font-family: system-ui, sans-serif; background: #fdf6e3; color: #3b2f1e;
-           display: flex; min-height: 100vh; margin: 0; align-items: center; justify-content: center; text-align: center; padding: 16px; }
-    a { color: #b36b00; font-size: 1.25rem; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hive Street Honey</title>
+<script>
+  /* ====== THE ONLY LINES YOU EVER NEED TO EDIT ====== */
+  var STATUS_URL   = 'https://script.google.com/macros/s/AKfycbzDNmLnM1F-XiyD3v1NVNc6UKLORY493-HleuwOFMJWwWdiaoCB4hTsGU4DDmIm8pd2Cw/exec';
+  var ORDER_URL    = 'https://forms.gle/uKUTU26cSy4C5k639';    // the order form
+  var WAITLIST_URL = '';                                       // optional backup; the script supplies it
+  /* ================================================== */
+</script>
+<style>
+  :root {
+    --bg: #fdf6e3; --ink: #3b2f1e; --soft: #6b5a3e;
+    --accent: #b36b00; --card: #fffdf6; --line: #e8dcc0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; padding: 24px 16px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg); color: var(--ink);
+    font-family: ui-rounded, "Segoe UI", system-ui, -apple-system, sans-serif;
+    text-align: center; line-height: 1.5;
+  }
+  .card {
+    width: 100%; max-width: 420px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 18px;
+    padding: 32px 24px; box-shadow: 0 8px 28px rgba(80, 60, 20, .08);
+  }
+  .comb { width: 54px; height: 54px; margin: 0 auto 14px; display: block; }
+  h1 { font-size: 1.45rem; margin: 0 0 10px; letter-spacing: .2px; }
+  p { margin: 0 0 16px; color: var(--soft); }
+  .btn {
+    display: inline-block; margin-top: 6px; padding: 15px 26px;
+    background: var(--accent); color: #fff; text-decoration: none;
+    border-radius: 999px; font-size: 1.05rem; font-weight: 600;
+  }
+  .quiet { font-size: .85rem; color: var(--soft); margin-top: 18px; }
+  .spin {
+    width: 26px; height: 26px; margin: 8px auto 0; border-radius: 50%;
+    border: 3px solid var(--line); border-top-color: var(--accent);
+    animation: turn .9s linear infinite;
+  }
+  @keyframes turn { to { transform: rotate(360deg); } }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1d1a14; --ink: #f4ead6; --soft: #c3b393;
+      --accent: #e0a033; --card: #272219; --line: #3d3528;
+    }
+    :root:not([data-theme="light"]) .btn { color: #1d1a14; }
+  }
+</style>
 </head>
 <body>
-  <p>Taking you to the honey order form…<br><br>
-     <a href="https://forms.gle/uKUTU26cSy4C5k639">Tap here if nothing happens</a></p>
-  <script>location.replace("https://forms.gle/uKUTU26cSy4C5k639");</script>
+  <main class="card" id="card">
+    <svg class="comb" viewBox="0 0 100 92" aria-hidden="true">
+      <g fill="none" stroke="var(--accent)" stroke-width="5" stroke-linejoin="round">
+        <path d="M50 4 L72 17 L72 42 L50 55 L28 42 L28 17 Z"/>
+        <path d="M28 44 L50 57 L50 82 L28 95 L6 82 L6 57 Z"/>
+        <path d="M72 44 L94 57 L94 82 L72 95 L50 82 L50 57 Z"/>
+      </g>
+    </svg>
+    <h1 id="title">Hive Street Honey</h1>
+    <p id="msg">One moment...</p>
+    <div class="spin" id="spin"></div>
+  </main>
+
+<script>
+(function () {
+  var title = document.getElementById('title');
+  var msg = document.getElementById('msg');
+  var spin = document.getElementById('spin');
+  var card = document.getElementById('card');
+  var done = false;
+
+  function toOrderForm() {
+    if (done) return;
+    done = true;
+    location.replace(ORDER_URL);
+  }
+
+  function showSoldOut(waitlist) {
+    if (done) return;
+    done = true;
+    spin.remove();
+    title.textContent = 'Sold out for now';
+    msg.innerHTML = 'The bees are working on the next batch. Leave your email and I\'ll let you know the moment it\'s jarred.';
+    var link = waitlist || WAITLIST_URL;
+    if (link) {
+      var a = document.createElement('a');
+      a.className = 'btn';
+      a.href = link;
+      a.textContent = 'Tell me when there\'s honey';
+      card.appendChild(a);
+    } else {
+      var p = document.createElement('p');
+      p.className = 'quiet';
+      p.textContent = 'Check back soon - thanks for stopping by.';
+      card.appendChild(p);
+    }
+  }
+
+  // If anything is slow or broken, just send people to the order form.
+  var bail = setTimeout(toOrderForm, 5000);
+
+  if (!STATUS_URL || STATUS_URL.indexOf('PASTE_') === 0) {
+    clearTimeout(bail);
+    toOrderForm();
+    return;
+  }
+
+  fetch(STATUS_URL, { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      clearTimeout(bail);
+      if (d && d.soldOut) showSoldOut(d.waitlist);
+      else if (d && d.order) { done = true; location.replace(d.order); }
+      else toOrderForm();
+    })
+    .catch(function () { clearTimeout(bail); toOrderForm(); });
+})();
+</script>
 </body>
 </html>
